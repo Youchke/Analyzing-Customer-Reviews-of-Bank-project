@@ -1,0 +1,20 @@
+
+# models/schema.yml
+version: 2
+
+sources:
+  - name: source_data
+    schema: public 
+    tables:
+      - name: staging_reviews
+      - name: raw_reviews_brutes
+models:
+  - name: stg_reviews_cleaned
+    description: "nettoyer les textes"
+    data_tests:
+      - not_null:
+          columns: [id, bank_name]
+      - unique:
+          columns: [id]
+
+  
