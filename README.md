@@ -22,9 +22,8 @@ This project implements a comprehensive data pipeline to collect, process, and a
 | Analysis & BI         | Looker Studio (Google Data Studio)        |
 | Version Control       | Git, GitHub                               |
 
-
 ## Folder Structure
-
+```bash
 bank_reviews_dw_project/                # Main directory
 ├── data/                               # Raw and processed data files
 │
@@ -50,7 +49,7 @@ bank_reviews_dw_project/                # Main directory
 ├── dashboards/                         # Looker Studio configs, links, or screenshots of dashboards
 │
 └── docs/                               # Project documentation, reports, and setup guides
-
+```
 ###  Project Roadmap 
 
 | **Phase** | **Focus**                           | **Key Deliverables**                                                                 |
@@ -64,13 +63,12 @@ bank_reviews_dw_project/                # Main directory
 
 ## Phase 1: Data Collection (Scraping Google Maps Reviews)
 
-### 1. Extraction des données
+### 1. Data Extraction
 
-Les scripts Python [`google_maps_scraper.py`](./scripts/google_maps_scraper.py)  permet d’extraire les avis des agences bancaires marocaines via :
+The Python script  [`google_maps_scraper.py`](./scripts/google_maps_scraper.py) is used to extract reviews of Moroccan bank branches via:
+- **Web Scraping** using **BeautifulSoup** or **Selenium**
 
-- **Web Scraping**  à l’aide de **BeautifulSoup** ou **seleniem**
-
-#### ✅ Champs extraits :
+#### ✅ Extracted Fields:
 ```json
 
 {
@@ -81,17 +79,16 @@ Les scripts Python [`google_maps_scraper.py`](./scripts/google_maps_scraper.py) 
   "rating": "Rating (1-5)",
   "review_date": "YYYY-MM-DD"
 }
-### 2. Automatisation avec Apache Airflow
+```
+### 2. Automation with Apache Airflow
+The extraction process is automated using an Airflow DAG defined in bank_reviews_dag.py.
+This DAG enables: 
 
-L’automatisation du processus d’extraction est assurée à l’aide d’un **DAG Airflow** défini dans [`bank_reviews_dag.py`](./dags/bank_reviews_dag.py).
+**Scheduling** the scraping script to run daily or weekly
+**Automating the entire pipeline**
+**Automatically loading** the raw extracted data into PostgreSQL (table stg_google_maps_reviews)
 
-Ce DAG permet de :
-
-- **Planifier l’exécution** du script de scraping de manière quotidienne ou hebdomadaire
-- **Automatiser l’ensemble du pipeline**
-- **Charger automatiquement** les données brutes extraites dans PostgreSQL (table `stg_google_maps_reviews`)
-
-#### Exemple de tâches dans le DAG
+#### Example tasks in the DAG:
 
 ```python
 from airflow.operators.python_operator import PythonOperator
@@ -107,3 +104,79 @@ load_task = PythonOperator(
     python_callable=load,
     dag=dag,
 )
+```
+## Phase 2: Data Cleaning & Transformation
+
+### 1. Data Cleaning (DBT & SQL)
+
+- Remove duplicate reviews using SQL window functions or DBT tests.
+
+- Text normalization:
+  - Convert to lowercase.
+  - Remove punctuation and special characters.
+  - Eliminate stop words (e.g., using NLTK or custom SQL regex).
+
+- Handle missing values:
+  - Impute or flag null ratings/text (e.g., `rating IS NULL`).
+
+---
+
+### 2. Data Enrichment
+
+- **Language detection**:
+  - Use Python libraries (e.g., `langdetect`) or PostgreSQL extensions (e.g., `pg_trgm`).
+
+- **Sentiment analysis**:
+  - Classify reviews as Positive/Neutral/Negative (e.g., with `TextBlob` or `VADER`).
+
+- **Topic modeling (LDA)**:
+  - Extract key topics from reviews (e.g., "service speed," "staff attitude").
+  - Implemented via Python (`scikit-learn`) or SQL UDFs.
+
+```bash
+├── 📄 projet_dbt/models/staging/stg_reviews_cleaned.sql   # SQL transformations
+├── 📄 projet_dbt/macros/normalize_text.sql                # SQL text processing
+├── 📄 scripts/multilingual_sentiment_analysis.py          # Sentiment classification
+└── 📄 scripts/topic_modeling.py                           # LDA implementation
+```
+### 3. Automation with Airflow - Running DBT models
+
+Example Airflow task to run DBT staging models:
+```python
+from airflow.operators.bash_operator import BashOperator
+
+dbt_run_staging = BashOperator(
+    task_id='dbt_run_staging',
+    bash_command='cd ~/reviews_prouject/dbt_project/outputs && dbt run --models stg_reviews_cleaned'
+)
+```
+## Phase 3: Data Modeling (Star Schema in PostgreSQL)
+
+### Dimension Tables  
+Files: `dim_bank.sql`, `dim_branch.sql`, `dim_location.sql`, `dim_sentiment.sql`
+
+**Role:** Create dimension tables (`bank_id`, `branch_id`, `location_id`, `sentiment_id`) with primary keys and distinct data sourced from `cleaned_reviews`.
+
+---
+
+### Fact Table  
+File: `fact_reviews.sql`
+
+**Role:** Build the fact table `fact_reviews` by joining the dimension tables, generating the primary key `fact_review_id`, and defining foreign key relationships.
+
+###  Load Data into PostgreSQL
+
+Once the data modeling is designed, the transformation logic is implemented in DBT to create and populate the dimension and fact tables. DBT allows building reusable SQL models that structure and clean the data according to the star schema design.
+
+The entire process is automated with Apache Airflow, which orchestrates the data ingestion pipeline to ensure that fresh, cleaned, and modeled data is regularly loaded into the PostgreSQL database.
+
+---
+
+### Data Model Diagram
+
+The diagram below illustrates the star schema design of our data mart, showing the central fact table (`fact_reviews`) connected to its surrounding dimension tables (`dim_bank`, `dim_branch`, `dim_location`, and `dim_sentiment`). This structure enables efficient querying and insightful analytics on customer reviews by different attributes.
+
+![Star Schema Diagram](./dashboards/star_shema.png)
+
+# Phase 4: Data Analytics & Reporting
+## 1. Looker Studio Dashboards
