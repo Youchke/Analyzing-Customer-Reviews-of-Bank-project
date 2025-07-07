@@ -5,11 +5,11 @@ This project implements a comprehensive data pipeline to collect, process, and a
 
 ## Objectives
 
--Collect customer reviews from Google Maps for Moroccan bank agencies
--Process unstructured review data through modern ETL pipelines
--Analyze sentiment trends and customer satisfaction patterns
--Visualize insights through interactive dashboards
--Automate the entire data pipeline for continuous monitoring
+- Collect customer reviews from Google Maps for Moroccan bank agencies
+- Process unstructured review data through modern ETL pipelines
+- Analyze sentiment trends and customer satisfaction patterns
+- Visualize insights through interactive dashboards
+- Automate the entire data pipeline for continuous monitoring
 
 ##  Technology Stack
 
@@ -170,8 +170,6 @@ Once the data modeling is designed, the transformation logic is implemented in D
 
 The entire process is automated with Apache Airflow, which orchestrates the data ingestion pipeline to ensure that fresh, cleaned, and modeled data is regularly loaded into the PostgreSQL database.
 
----
-
 ### Data Model Diagram
 
 The diagram below illustrates the star schema design of our data mart, showing the central fact table (`fact_reviews`) connected to its surrounding dimension tables (`dim_bank`, `dim_branch`, `dim_location`, and `dim_sentiment`). This structure enables efficient querying and insightful analytics on customer reviews by different attributes.
@@ -180,3 +178,63 @@ The diagram below illustrates the star schema design of our data mart, showing t
 
 # Phase 4: Data Analytics & Reporting
 ## 1. Looker Studio Dashboards
+This phase focuses on analyzing the transformed and modeled data by creating interactive dashboards in Looker Studio.
+
+These dashboards provide clear, dynamic, and customized visual insights to support decision-making.
+
+The visualizations are built around the following key areas:
+
+![figure 1](./dashboards/figure1.png)
+
+This area chart shows the number of customer reviews by sentiment (Positive, Negative, Neutral) from 2015 to 2025.
+
+It highlights:
+- A steady rise in positive reviews since 2019
+- A peak in negative reviews around 2021–2022
+- A stable trend in neutral reviews
+Overall, it reflects improving customer satisfaction over time.
+
+### Sentiment Distribution by Bank (June 2025)
+
+![figure 2](./dashboards/figure2.png)
+
+This chart shows customer review sentiment by bank in Morocco (as of June 21, 2025).  
+Banque Populaire and Attijariwafa Bank have the most reviews, mostly Neutral.  
+CIH Bank and Bank of Africa have fewer reviews, mainly Neutral and Positive.
+
+### Sentiment Breakdown by Review Topics in Moroccan Banks
+![figure 3](./dashboards/figure3.png)
+
+### Review Volume by Topics and Sentiment in Morocco
+![figure 4](./dashboards/figure4.png)
+
+### CIH Bank Branch Performance by Customer Satisfaction
+This chart ranks CIH Bank branches based on the share of positive reviews.  
+It highlights the top- and lowest-performing branches in terms of customer satisfaction.
+![figure 5](./dashboards/figure5.png)
+
+### Topic Distribution by Category and Percentage in Morocco
+![figure 6](./dashboards/figure6.png)
+
+### Proportional Distribution of Bank Review Topics in Morocco
+![figure 7](./dashboards/figure7.png)
+
+## Phase 5: Deployment and Automation
+
+### Orchestration with Apache Airflow
+
+The entire pipeline automation uses Apache Airflow to orchestrate the different tasks:
+![ dag](./dashboards/dag_airflow.png)
+
+![ interface](./dashboards/interface.png)
+
+The customer review analysis pipeline for Moroccan bank branches is fully automated using Apache Airflow.
+
+This workflow handles daily review collection from Google Maps, data cleaning (removing duplicates, text normalization), NLP enrichment (sentiment analysis and topic detection), and loads the data into PostgreSQL using a star schema.
+
+It supports multiple languages (Arabic, French, English) and sends alerts if many negative reviews are detected.
+
+The Airflow interface allows teams to monitor data collection, NLP quality, API issues, and pipeline performance.
+
+This automation ensures up-to-date insights on customer satisfaction, helping banks respond quickly and improve their services.
+
