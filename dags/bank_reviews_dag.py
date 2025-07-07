@@ -37,11 +37,11 @@ def load():
     engine = create_engine('postgresql://review_user:review_user@localhost:5432/airflow_db')
     df.to_sql('staging_reviews', engine, if_exists='replace', index=True)
 
-# extract_task = PythonOperator(
-#     task_id='extract_data',
-#     python_callable=extract_maps.extract,
-#     dag=dag,
-# )
+extract_task = PythonOperator(
+    task_id='extract_data',
+    python_callable=extract_maps.extract,
+    dag=dag,
+)
 
 load_task = PythonOperator(
     task_id='load_data',
