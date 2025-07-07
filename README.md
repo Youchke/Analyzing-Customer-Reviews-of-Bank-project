@@ -1,4 +1,4 @@
-# Bank Reviews Data Warehouse Project
+# Analyzing Customer Reviews of Bank Agencies in Morocco using a Modern Data Stack
 ## Project Overview
 Analyzing Customer Reviews of Bank Agencies in Morocco using a Modern Data Stack
 This project implements a comprehensive data pipeline to collect, process, and analyze Google Maps reviews for bank agencies in Morocco. The goal is to extract valuable insights using sentiment analysis, topic modeling, and customer experience metrics.
