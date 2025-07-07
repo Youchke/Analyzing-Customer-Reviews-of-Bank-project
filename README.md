@@ -11,44 +11,45 @@ This project implements a comprehensive data pipeline to collect, process, and a
 -Visualize insights through interactive dashboards
 -Automate the entire data pipeline for continuous monitoring
 
-## Stack Technologique
+##  Technology Stack
 
-| Étape                 | Outils/Tech utilisés                      |
-|---------------------- |-------------------------------------------|
-| Extraction de données | Python, Google Maps API, Scrapy, Selenium |
+| Step                  | Tools / Technologies Used                 |
+|-----------------------|-------------------------------------------|
+| Data Extraction       | Python, Google Maps API, Scrapy, Selenium |
 | Orchestration         | Apache Airflow                            |
-| Stockage              | PostgreSQL                                |
+| Storage               | PostgreSQL                                |
 | Transformation        | DBT (Data Build Tool)                     |
-| Analyse & BI          | Looker Studio (Google Data Studio)        |
-| Contrôle de version   | Git, GitHub                               |
+| Analysis & BI         | Looker Studio (Google Data Studio)        |
+| Version Control       | Git, GitHub                               |
+
 
 ## Folder Structure
 
-bank_reviews_dw_project/                # Main directory.
-├── data/                               # Raw and processed data files.
+bank_reviews_dw_project/                # Main directory
+├── data/                               # Raw and processed data files
 │
-├── airflow/                            # Airflow setup for pipeline orchestration.
-│   ├── dags/                           # DAG scripts for data collection and transformation.
-│   └── logs/                           # Execution logs from Airflow tasks.
+├── airflow/                            # Airflow setup for pipeline orchestration
+│   ├── dags/                           # DAG scripts for data collection and transformation
+│   └── logs/                           # Execution logs from Airflow tasks
 │
-├── scripts/                            # Python scripts for scraping, cleaning, and enrichment (NLP).
+├── scripts/                            # Python scripts for scraping, cleaning, and enrichment (NLP)
 │
-├── projet_dbt/                         # DBT project for data transformation and modeling.
-│   ├── analyses/                       # Optional ad hoc analysis SQL files.
-│   ├── dbt_packages/                   # DBT dependencies (installed packages).
-│   ├── logs/                           # DBT execution logs.
-│   ├── macros/                         # Custom DBT macros (reusable SQL functions).
-│   ├── models/                         # Main transformation logic (SQL models).
-│   │   ├── staging/                    # Initial cleaned models from raw data.
-│   │   └── marts/                      # Final fact and dimension models (star schema).
-│   ├── seeds/                          # Static CSV datasets loaded into the warehouse.
-│   ├── snapshots/                      # Historical snapshots of slowly changing data.
-│   ├── target/                         # Compiled DBT outputs and artifacts.
-│   └── tests/                          # DBT tests for data quality and integrity.
+├── projet_dbt/                         # DBT project for data transformation and modeling
+│   ├── analyses/                       # Optional ad hoc analysis SQL files
+│   ├── dbt_packages/                   # DBT dependencies (installed packages)
+│   ├── logs/                           # DBT execution logs
+│   ├── macros/                         # Custom DBT macros (reusable SQL functions)
+│   ├── models/                         # Main transformation logic (SQL models)
+│   │   ├── staging/                    # Initial cleaned models from raw data
+│   │   └── marts/                      # Final fact and dimension models (star schema)
+│   ├── seeds/                          # Static CSV datasets loaded into the warehouse
+│   ├── snapshots/                      # Historical snapshots of slowly changing data
+│   ├── target/                         # Compiled DBT outputs and artifacts
+│   └── tests/                          # DBT tests for data quality and integrity
 │
-├── dashboards/                         # Looker Studio configs, links, or screenshots of dashboards.
+├── dashboards/                         # Looker Studio configs, links, or screenshots of dashboards
 │
-└── docs/                               # Project documentation, reports, and setup guides.
+└── docs/                               # Project documentation, reports, and setup guides
 
 ###  Project Roadmap 
 
@@ -70,14 +71,14 @@ Les scripts Python [`google_maps_scraper.py`](./scripts/google_maps_scraper.py) 
 - **Web Scraping**  à l’aide de **BeautifulSoup** ou **seleniem**
 
 #### ✅ Champs extraits :
-...json
+```json
 
 {
-  "bank_name": "Nom de la banque",
-  "branch_name": "Nom de l'agence",
-  "location": "Adresse/GPS",
-  "review_text": "Texte de l'avis",
-  "rating": "Note (1-5)",
+  "bank_name": "Bank name",
+  "branch_name": "Branch name",
+  "location": "Address/GPS",
+  "review_text": "Review text",
+  "rating": "Rating (1-5)",
   "review_date": "YYYY-MM-DD"
 }
 ### 2. Automatisation avec Apache Airflow
